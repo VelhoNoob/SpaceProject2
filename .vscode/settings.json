@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Frog_Adveture.sln"
+    "dotnet.defaultSolution": "SpaceProject2.sln"
 }
