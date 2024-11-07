@@ -37,20 +37,39 @@ public class PlayerHealthController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (invincibilityCounter > 0)
+        {
+            invincibilityCounter -= Time.deltaTime;
+
+            if (invincibilityCounter <= 0)
+            {
+                sr.color = normalColor;
+            }
+
+        }
     }
 
     public void DamagePlayer()
     {
-        currentHealth--;  
-        
-        if (currentHealth < 0)
+        if (invincibilityCounter <= 0)
         {
-            currentHealth = 0;
-            gameObject.SetActive(false);
+
+            currentHealth--;
+
+            if (currentHealth < 0)
+            {
+                currentHealth = 0;
+                gameObject.SetActive(false);
+            }
+
+            else
+            {
+                invincibilityCounter = invincibilityLength;
+
+                sr.color = fadeColor;
+            }
+            UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);
+
         }
-
-        UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);
-
     }
 }
