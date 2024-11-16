@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEditor.Tilemaps;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,7 +27,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float groundCheckRadius;
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private LayerMask whatIsPlatform; // Novo LayerMask para plataformas
+    [SerializeField] private LayerMask whatIsEnemy; // Novo LayerMask para enemy
     [SerializeField] private bool isGounded;
+
+    [Header("Teste")]
+    public int cristais = 0;
+    private Text CristaisTexto;
 
     private void Awake()
     {
@@ -41,6 +47,14 @@ public class PlayerController : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         bc = GetComponent<BoxCollider2D>();
 
+        // Tenta encontrar o objeto com a tag e pegar o componente Text
+        CristaisTexto = GameObject.FindGameObjectWithTag("TextoCristalTag").GetComponent<Text>();
+
+        if (CristaisTexto == null)
+        {
+            Debug.LogError("CristaisTexto não foi encontrado. Verifique a tag e o componente Text no objeto.");
+        }
+
 
     }
 
@@ -49,7 +63,8 @@ public class PlayerController : MonoBehaviour
     {
         // Verifica se o Player está em contato com o solo ou com uma plataforma
         isGounded = Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsGround) ||
-                 Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsPlatform);
+                 Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsPlatform) ||
+                 Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsEnemy);
 
 
         // MOVIMENTO
@@ -123,7 +138,9 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
+    // PLATAFORMA
     public bool isOnPlatform { get; private set; }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -133,22 +150,44 @@ public class PlayerController : MonoBehaviour
 
             isOnPlatform = true;
         }
+
+        // COLISÃO INIMIGO
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            PlayerHealthController.instance.DamagePlayer();
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
+        // COLISÃO PLATAFORMA
         if (collision.gameObject.CompareTag("Platform"))
         {
             Invoke("DetachFromPlatform", 0.1f); // Atraso antes de remover o jogador como filho da plataforma
             isOnPlatform = false;
         }
+
     }
+
 
     private void DetachFromPlatform()
     {
         transform.SetParent(null);
 
     }
+
+    //CRISTAIS
+    void OnTriggerEnter2D(Collider2D gatilho)
+    {
+        if (gatilho.gameObject.tag == "Cristais")
+        {
+            Destroy(gatilho.gameObject);
+            cristais++;
+            CristaisTexto.text = cristais.ToString();
+        }
+    }
+
+
 
 
 }
