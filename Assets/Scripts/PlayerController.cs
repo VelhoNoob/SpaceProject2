@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
     private Transform tr;
     private BoxCollider2D bc;
+    private SpriteRenderer sr;
 
     [Header("Move Info")]
     [SerializeField] private float moveSpeed;
@@ -30,9 +31,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask whatIsEnemy; // Novo LayerMask para enemy
     [SerializeField] private bool isGounded;
 
-    [Header("Teste")]
+    [Header("cristais")]
     public int cristais = 0;
     private Text CristaisTexto;
+
+    [Header("Tiro")]
+    [SerializeField] public GameObject Bala;
+    [SerializeField] private float tempoEsperaTiro;
+    [SerializeField] private float velocidadeDisparo;
+    [SerializeField] private float DuraçãoBala;
+    private float meuTempoTiro = 0;
+    [SerializeField] private bool pode_atirar = true;
+
+    [Header("Munição")]
+    [SerializeField] private int municao;
+    private Text MunicaoTexto;
 
     private void Awake()
     {
@@ -46,14 +59,13 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();
         bc = GetComponent<BoxCollider2D>();
+        sr = GetComponentInChildren<SpriteRenderer>();
 
-        // Tenta encontrar o objeto com a tag e pegar o componente Text
         CristaisTexto = GameObject.FindGameObjectWithTag("TextoCristalTag").GetComponent<Text>();
+        MunicaoTexto = GameObject.FindGameObjectWithTag("TextoMunicaoTag").GetComponent<Text>();
 
-        if (CristaisTexto == null)
-        {
-            Debug.LogError("CristaisTexto não foi encontrado. Verifique a tag e o componente Text no objeto.");
-        }
+        //INICIANDO CONTADOR DE MUNIÇÃO
+        MunicaoTexto.text = municao.ToString();
 
 
     }
@@ -105,7 +117,6 @@ public class PlayerController : MonoBehaviour
         }
 
         //AGACHAR
-
         if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
         {
             isCrouch = true;
@@ -121,15 +132,29 @@ public class PlayerController : MonoBehaviour
 
         //Configurando dire��es
         if (rb.velocity.x > 0)
-            transform.localScale = new Vector3(1f, transform.localScale.y, transform.localScale.z);
+        {
+            //transform.localScale = new Vector3(1f, transform.localScale.y, transform.localScale.z);
+            sr.flipX = false;
+        }
         if (rb.velocity.x < 0)
-            transform.localScale = new Vector3(-1f, transform.localScale.y, transform.localScale.z);
+        {
+            //transform.localScale = new Vector3(-1f, transform.localScale.y, transform.localScale.z);
+            sr.flipX = true;
+        }
+
 
         //Chamando anima��es
         anim.SetFloat("speed", Mathf.Abs(rb.velocity.x));
         anim.SetBool("isGrounded", isGounded);
         anim.SetFloat("ySpeed", rb.velocity.y);
         anim.SetBool("Crouch", isCrouch);
+
+
+
+        //ATIRAR
+        Atirar();
+
+
 
     }
 
@@ -176,18 +201,101 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    //CRISTAIS
+    //COLIÇÃO COLETA
     void OnTriggerEnter2D(Collider2D gatilho)
     {
+        //CRISTAIS
         if (gatilho.gameObject.tag == "Cristais")
         {
             Destroy(gatilho.gameObject);
             cristais++;
             CristaisTexto.text = cristais.ToString();
         }
+        //MUNIÇÃO
+        if (gatilho.gameObject.tag == "Munição")
+        {
+            Destroy(gatilho.gameObject);
+            municao += 5;
+            MunicaoTexto.text = municao.ToString();
+        }
     }
 
 
+
+
+
+    //TIRO
+    void Atirar()
+    {
+        if (pode_atirar == true)
+        {
+
+
+            //Atirando
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                //Controle de munição
+                if (municao > 0)
+                {
+                    municao--;
+                    //CONTADOR DE MUNIÇÃO
+                    MunicaoTexto.text = municao.ToString();
+                    Disparo();
+                    anim.SetBool("Atirando", true); // Ativa a animação                
+                    Invoke(nameof(DesativarAnimacaoAtirando), 0.1f); // Desativa após 1 segundo
+                }
+            }
+        }
+        else
+        {
+            TemporizadorTiro();
+        }
+
+    }
+
+    void DesativarAnimacaoAtirando()
+    {
+        anim.SetBool("Atirando", false); // Desativa a animação
+    }
+
+    void Disparo()
+    {
+
+        if (sr.flipX == false)
+        {
+            //direção ---->
+            //posição que a bala sai
+            Vector3 pontoDisparo = new Vector3(transform.position.x + 0.8f, transform.position.y, transform.position.z);
+            GameObject BalaDisparada = Instantiate(Bala, pontoDisparo, Quaternion.identity);
+            BalaDisparada.GetComponent<ControllerTiro>().DirecaoBala(velocidadeDisparo);
+            //destruir bala
+            Destroy(BalaDisparada, DuraçãoBala);
+        }
+
+        if (sr.flipX == true)
+        {
+            //direção <----
+            //posição que a bala sai
+            Vector3 pontoDisparo = new Vector3(transform.position.x - 0.8f, transform.position.y, transform.position.z);
+            GameObject BalaDisparada = Instantiate(Bala, pontoDisparo, Quaternion.identity);
+            BalaDisparada.GetComponent<ControllerTiro>().DirecaoBala(-velocidadeDisparo);
+            //destruir bala
+            Destroy(BalaDisparada, DuraçãoBala);
+        }
+
+        pode_atirar = false;
+
+    }
+
+    void TemporizadorTiro()
+    {
+        meuTempoTiro += Time.deltaTime;
+        if (meuTempoTiro > tempoEsperaTiro)
+        {
+            pode_atirar = true;
+            meuTempoTiro = 0;
+        }
+    }
 
 
 }

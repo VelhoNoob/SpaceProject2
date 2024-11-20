@@ -8,6 +8,9 @@ TagManager:
   - Cristais
   - TextoCristalTag
   - Enemy
+  - Ground
+  - "Muni\xE7\xE3o"
+  - TextoMunicaoTag
   layers:
   - Default
   - TransparentFX
