@@ -16,16 +16,16 @@ public class TrocaCena : MonoBehaviour
     {
 
     }
-/*
+
     public void ChamarCena()
     {
         SceneManager.LoadScene(1); // numero da cena adicionada na build, configura��es da unit
     }
 
-    public void ChamarFase(int numerofase);
+    public void ChamarFase(int numerofase)
     {
-        //SceneManager.LoadScene(numerofase);
+        SceneManager.LoadScene(numerofase);
     }
-    */
+    
        
 }

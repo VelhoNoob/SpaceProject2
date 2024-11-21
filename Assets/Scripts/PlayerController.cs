@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -296,6 +297,18 @@ public class PlayerController : MonoBehaviour
             meuTempoTiro = 0;
         }
     }
+
+    /*
+    void Morte ()
+    {
+
+        //GameObject.FindGameObjectWithTag("Cenas").
+        //GetComponent<TrocaCena>().IniciarGamerOver();
+
+      SceneManager.LoadScene()
+
+    }
+    */
 
 
 }

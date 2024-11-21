@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealthController : MonoBehaviour
 {
@@ -60,6 +61,7 @@ public class PlayerHealthController : MonoBehaviour
             {
                 currentHealth = 0;
                 gameObject.SetActive(false);
+                SceneManager.LoadScene(2);
             }
 
             else
