@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float activeSpeed;
     [SerializeField] private bool canDoubleJump;
     [SerializeField] private bool isCrouch;
+    private bool isKnockingback;
+    public bool isOnPlatform { get; private set; }
 
     [Header("Groud Info")]
     [SerializeField] private Transform groundCheckPoint;
@@ -47,6 +49,7 @@ public class PlayerController : MonoBehaviour
     [Header("Munição")]
     [SerializeField] private int municao;
     private Text MunicaoTexto;
+       
 
     private void Awake()
     {
@@ -107,6 +110,7 @@ public class PlayerController : MonoBehaviour
                     Jump();
                     canDoubleJump = false;
                     anim.SetTrigger("isDoubleJump");
+                    Invoke(nameof(DesativarAnimacaoPuloDuplo), 0.2f); // Intervalo para desativar animação
                 }
             }
         }
@@ -164,12 +168,16 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
-    // PLATAFORMA
-    public bool isOnPlatform { get; private set; }
+    void DesativarAnimacaoPuloDuplo()
+    {
+        anim.SetBool("isDoubleJump", false); // Desativa a animação
+    }
 
-
+    //COLISÕES
+    // ENTRANDO EM COLISÃO
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // COLISÃO Plataforma
         if (collision.gameObject.CompareTag("Platform"))
         {
             transform.SetParent(collision.transform);
@@ -183,7 +191,7 @@ public class PlayerController : MonoBehaviour
             PlayerHealthController.instance.DamagePlayer();
         }
     }
-
+    // SAINDO DA COLISÃO
     private void OnCollisionExit2D(Collision2D collision)
     {
         // COLISÃO PLATAFORMA
@@ -195,7 +203,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-
+    //Transforma o Player em parente da Plataforma
     private void DetachFromPlatform()
     {
         transform.SetParent(null);
@@ -221,10 +229,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-
-
-
     //TIRO
     void Atirar()
     {
@@ -243,7 +247,7 @@ public class PlayerController : MonoBehaviour
                     MunicaoTexto.text = municao.ToString();
                     Disparo();
                     anim.SetBool("Atirando", true); // Ativa a animação                
-                    Invoke(nameof(DesativarAnimacaoAtirando), 0.1f); // Desativa após 1 segundo
+                    Invoke(nameof(DesativarAnimacaoAtirando), 0.2f); // Intervalo para desativar animação
                 }
             }
         }
@@ -288,6 +292,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    //INTERVALO ENTRE TIROS
     void TemporizadorTiro()
     {
         meuTempoTiro += Time.deltaTime;
@@ -298,17 +303,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /*
-    void Morte ()
+    //KNOCKBACK
+    public void Knockback()
     {
+        isKnockingback = true;
 
-        //GameObject.FindGameObjectWithTag("Cenas").
-        //GetComponent<TrocaCena>().IniciarGamerOver();
+        Vector2 knockbackDir = Vector2.zero;
+        float knockbakJump = jumpForce * .5f;
 
-      SceneManager.LoadScene()
+        if (rb.velocity.x > 0)
+        {
+            knockbackDir = new Vector2(rb.velocity.x * -.5f, knockbakJump);
+        }
+
+        if (rb.velocity.x < 0)
+        {
+            knockbackDir = new Vector2(rb.velocity.x * -.5f, knockbakJump);
+        }
+
+        rb.velocity = knockbackDir;
+        anim.SetTrigger("isKnockback");
+
+        StartCoroutine(EndKnockback()); // chama a pausa da corrotina
 
     }
-    */
 
-
+    IEnumerator EndKnockback()
+    {
+        yield return new WaitForSeconds(.2f); // pausa a rotina por 2 segundos
+        isKnockingback = false;
+    }
 }

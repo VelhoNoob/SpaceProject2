@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public static EnemyController instance;
     private SpriteRenderer ImagemEnemy;
 
     [SerializeField] private float velocidade;
     [SerializeField] private float distInicial = -0.5f;
     [SerializeField] private float distFinal = 2f;
+    [SerializeField] public int vidaInimigo;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +45,16 @@ public class EnemyController : MonoBehaviour
         {
             velocidade = velocidade * -1;
             ImagemEnemy.flipX = false;
+        }
+    }
+
+    public void TomarDano()
+    {
+        vidaInimigo--; // Reduz a vida do inimigo
+
+        if (vidaInimigo <= 0) // Verifica se a vida é menor ou igual a zero
+        {
+            Destroy(this.gameObject); // Destroi o inimigo
         }
     }
 }

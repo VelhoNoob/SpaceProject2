@@ -9,6 +9,9 @@ public class UIController : MonoBehaviour
     
 
     [SerializeField] private Image[] heatsImage;
+    private int vidas;
+    private Text vidas_texto;
+    
 
     private void Awake()
     {
@@ -19,7 +22,9 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        vidas = PlayerHealthController.instance.vidas;
+        vidas_texto = GameObject.FindGameObjectWithTag("TextoVidasTag").GetComponent<Text>();
+        vidas_texto.text = "Vidas: " + vidas.ToString();                
     }
 
     // Update is called once per frame
@@ -41,6 +46,11 @@ public class UIController : MonoBehaviour
             }
                         
         }
+    }
+
+    public void UpdateVidasDisplay()
+    {
+        vidas_texto.text = "Vidas: " + PlayerHealthController.instance.vidas.ToString();
     }
 
 }
