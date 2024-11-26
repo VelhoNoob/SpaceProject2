@@ -46,6 +46,20 @@ public class ControllerTiro : MonoBehaviour
             Destroy(this.gameObject);
         }
 
+        if (colisao.gameObject.CompareTag("Boss"))
+        {
+            // Obtém o script do inimigo atingido
+            EnemyController enemy = colisao.gameObject.GetComponent<EnemyController>();
+
+            if (enemy != null)
+            {
+                enemy.TomarDano(); // Aplica o dano ao inimigo
+            }
+
+            // Destroi a bala
+            Destroy(this.gameObject);
+        }
+
         if (colisao.gameObject.CompareTag("Ground"))
         {
             // Destroi a bala ao colidir com o chão

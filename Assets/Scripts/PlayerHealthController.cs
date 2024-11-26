@@ -41,7 +41,7 @@ public class PlayerHealthController : MonoBehaviour
 
         //Determinando posição inicial no começo do jogo
         posInicial = new Vector3(-11.53f, 0, transform.position.z);
-        transform.position = posInicial;
+        //transform.position = posInicial;
 
         UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);
                 
@@ -59,14 +59,20 @@ public class PlayerHealthController : MonoBehaviour
                 sr.color = normalColor;
             }
 
-        }
+        }             
 
-        //if UNIT_EDITOR // Diretiva de pré-processador
+    }
 
-        if (Input.GetKeyDown(KeyCode.H))
+    void OnTriggerEnter2D(Collider2D gatilho)
+    {       
+        //Morte instatanea
+        if (gatilho.gameObject.tag == "MorteImediata")
         {
-            AddHealth(1);
+            
+            Morrer();
+
         }
+
 
     }
 
@@ -97,19 +103,7 @@ public class PlayerHealthController : MonoBehaviour
 
         }
     }
-
-    public void AddHealth(int amountToAdd)
-    {
-        currentHealth += amountToAdd;
-
-        if (currentHealth >= maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
-
-        UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);
-    }
-
+        
     public void Morrer()
     {
         vidas--;
@@ -126,8 +120,7 @@ public class PlayerHealthController : MonoBehaviour
         }
 
         UIController.instance.UpdateVidasDisplay();
-
-        player.Knockback();
+                
     }
 
     void Inicializar()
@@ -136,7 +129,6 @@ public class PlayerHealthController : MonoBehaviour
         transform.position = posInicial;
         //recuperar HP
         currentHealth = 3;
-
 
     }
 

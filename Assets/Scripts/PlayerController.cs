@@ -49,6 +49,11 @@ public class PlayerController : MonoBehaviour
     [Header("Munição")]
     [SerializeField] private int municao;
     private Text MunicaoTexto;
+
+
+    private GameObject boss;
+
+    
        
 
     private void Awake()
@@ -70,7 +75,6 @@ public class PlayerController : MonoBehaviour
 
         //INICIANDO CONTADOR DE MUNIÇÃO
         MunicaoTexto.text = municao.ToString();
-
 
     }
 
@@ -190,6 +194,12 @@ public class PlayerController : MonoBehaviour
         {
             PlayerHealthController.instance.DamagePlayer();
         }
+
+        // COLISÃO BOSS
+        if (collision.gameObject.CompareTag("Boss"))
+        {
+            PlayerHealthController.instance.DamagePlayer();
+        }
     }
     // SAINDO DA COLISÃO
     private void OnCollisionExit2D(Collision2D collision)
@@ -227,6 +237,21 @@ public class PlayerController : MonoBehaviour
             municao += 5;
             MunicaoTexto.text = municao.ToString();
         }
+        //END GAME
+        if (gatilho.gameObject.tag == "EndGame")
+        {
+            // Verifica se o Boss ainda existe na cena
+            boss = GameObject.FindGameObjectWithTag("Boss");
+
+            if (boss == null)
+            {
+                // O Boss foi derrotado, pode ativar o efeito do EndGame
+                SceneManager.LoadScene(5); // Carrega a próxima cena ou efeito desejado
+            }
+
+        }
+
+
     }
 
     //TIRO

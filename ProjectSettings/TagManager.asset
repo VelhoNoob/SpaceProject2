@@ -11,8 +11,10 @@ TagManager:
   - Ground
   - "Muni\xE7\xE3o"
   - TextoMunicaoTag
-  - municao
   - TextoVidasTag
+  - EndGame
+  - MorteImediata
+  - Boss
   layers:
   - Default
   - TransparentFX
