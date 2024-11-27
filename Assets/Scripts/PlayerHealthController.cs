@@ -9,6 +9,8 @@ public class PlayerHealthController : MonoBehaviour
 {
     public static PlayerHealthController instance;
 
+    private Animator anim;
+
     [SerializeField] private int currentHealth;
     [SerializeField] private int maxHealth;
     [SerializeField] public int vidas;
@@ -35,9 +37,11 @@ public class PlayerHealthController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        sr = GetComponentInChildren<SpriteRenderer>();
-        currentHealth = maxHealth;        
+        sr = GetComponentInChildren<SpriteRenderer>();               
         player = GetComponent<PlayerController>();
+        anim = GetComponentInChildren<Animator>();
+
+        currentHealth = maxHealth;
 
         //Determinando posição inicial no começo do jogo
         posInicial = new Vector3(-11.53f, 0, transform.position.z);
@@ -67,10 +71,13 @@ public class PlayerHealthController : MonoBehaviour
     {       
         //Morte instatanea
         if (gatilho.gameObject.tag == "MorteImediata")
-        {
-            
+        {            
             Morrer();
+        }
 
+        if (gatilho.gameObject.tag == "Checkpoint")
+        {
+            posInicial = gatilho.transform.position;
         }
 
 
@@ -85,7 +92,8 @@ public class PlayerHealthController : MonoBehaviour
 
             //  Morre vida menor que 0
             if (currentHealth < 0)
-            {  
+            {
+                anim.SetBool("isDeath", true); // Ativa a animação de morte                 
                 Morrer();
             }
             // Ainda tem vida
@@ -109,9 +117,8 @@ public class PlayerHealthController : MonoBehaviour
         vidas--;
         
         if (vidas < 0)
-        { 
-
-        Reiniciar();
+        {                        
+            Reiniciar();
 
         }
         else
@@ -125,16 +132,19 @@ public class PlayerHealthController : MonoBehaviour
 
     void Inicializar()
     {
+        
         //ponto inicial
         transform.position = posInicial;
         //recuperar HP
         currentHealth = 3;
+        anim.SetBool("isDeath", false); // desativando a animação de morte 
 
     }
 
     public void Reiniciar()
     {
-        SceneManager.LoadScene(2);
-    }
+        SceneManager.LoadScene(2);    }
+
+    
 
 }

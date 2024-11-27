@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
         bc = GetComponent<BoxCollider2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
 
+
         CristaisTexto = GameObject.FindGameObjectWithTag("TextoCristalTag").GetComponent<Text>();
         MunicaoTexto = GameObject.FindGameObjectWithTag("TextoMunicaoTag").GetComponent<Text>();
 
@@ -84,22 +85,28 @@ public class PlayerController : MonoBehaviour
         // Verifica se o Player está em contato com o solo ou com uma plataforma
         isGounded = Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsGround) ||
                  Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsPlatform) ||
-                 Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsEnemy);
+                 Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, whatIsEnemy);                    
 
 
         // MOVIMENTO
         var xInput = Input.GetAxisRaw("Horizontal");
 
-        activeSpeed = moveSpeed;
+        if (isCrouch)
+        {
+            xInput = 0; // Impede o movimento horizontal enquanto agachado
+        }
+
+        activeSpeed = moveSpeed;             
+        
 
         // CORRER
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && !isCrouch)
             activeSpeed = runSpeed;
 
         rb.velocity = new Vector2(xInput * activeSpeed, rb.velocity.y);
 
         //PULAR
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") &&!isCrouch)
         {
             if (isGounded)
             {
@@ -125,20 +132,6 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("isDoubleJump", false);
         }
 
-        //AGACHAR
-        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
-        {
-            isCrouch = true;
-            bc.offset = new Vector2(0.09651661f, -0.9962413f); // Define o offset para o estado de agachado
-            bc.size = new Vector2(1.380758f, 2.243932f); // Ajuste de altura do BoxCollider para agachado
-        }
-        else
-        {
-            isCrouch = false;
-            bc.offset = new Vector2(-0.09158087f, -0.6695511f); // Define o offset para o estado normal
-            bc.size = new Vector2(1.004563f, 2.897313f); // Altura normal do BoxCollider
-        }
-
         //Configurando dire��es
         if (rb.velocity.x > 0)
         {
@@ -151,6 +144,11 @@ public class PlayerController : MonoBehaviour
             sr.flipX = true;
         }
 
+        //AGACHAR
+        Agachar();
+
+        //ATIRAR
+        Atirar();
 
         //Chamando anima��es
         anim.SetFloat("speed", Mathf.Abs(rb.velocity.x));
@@ -158,13 +156,24 @@ public class PlayerController : MonoBehaviour
         anim.SetFloat("ySpeed", rb.velocity.y);
         anim.SetBool("Crouch", isCrouch);
 
-
-
-        //ATIRAR
-        Atirar();
-
-
-
+    }
+    //AGACHAR
+    private void Agachar()
+    {
+        
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+        {
+            isCrouch = true;
+            bc.offset = new Vector2(0.09651661f, -0.9962413f); // Define o offset para o estado de agachado
+            bc.size = new Vector2(1.380758f, 2.243932f); // Ajuste de altura do BoxCollider para agachado
+                                                         // ativando animação
+        }
+        else
+        {
+            isCrouch = false;
+            bc.offset = new Vector2(-0.09158087f, -0.6695511f); // Define o offset para o estado normal
+            bc.size = new Vector2(1.004563f, 2.897313f); // Altura normal do BoxCollider
+        }
     }
 
     private void Jump()
@@ -229,6 +238,8 @@ public class PlayerController : MonoBehaviour
             Destroy(gatilho.gameObject);
             cristais++;
             CristaisTexto.text = cristais.ToString();
+            // Notificar o sistema de conquistas
+            AchievementSystem.instance.CristalCollected();
         }
         //MUNIÇÃO
         if (gatilho.gameObject.tag == "Munição")
@@ -251,7 +262,6 @@ public class PlayerController : MonoBehaviour
 
         }
 
-
     }
 
     //TIRO
@@ -259,7 +269,7 @@ public class PlayerController : MonoBehaviour
     {
         if (pode_atirar == true)
         {
-
+            if (isCrouch) return;
 
             //Atirando
             if (Input.GetKeyDown(KeyCode.X))

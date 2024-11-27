@@ -55,6 +55,9 @@ public class EnemyController : MonoBehaviour
         if (vidaInimigo <= 0) // Verifica se a vida é menor ou igual a zero
         {
             Destroy(this.gameObject); // Destroi o inimigo
+            
+            // Notificar o sistema de conquistas
+            AchievementSystem.instance.EnemyDefeated();
         }
     }
 }

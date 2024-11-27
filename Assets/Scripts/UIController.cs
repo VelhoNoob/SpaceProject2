@@ -9,6 +9,7 @@ public class UIController : MonoBehaviour
     
 
     [SerializeField] private Image[] heatsImage;
+    [SerializeField] private Text achievementText;
     private int vidas;
     private Text vidas_texto;
     
@@ -51,6 +52,19 @@ public class UIController : MonoBehaviour
     public void UpdateVidasDisplay()
     {
         vidas_texto.text = "Vidas: " + PlayerHealthController.instance.vidas.ToString();
+    }
+
+    public void ShowAchievementMessage(string message)
+    {
+        // Exemplo: Mostrar texto na tela
+        achievementText.text = message; // `achievementText` seria um componente Text ou TMP na tela
+        StartCoroutine(HideAchievementMessage());
+    }
+
+    private IEnumerator HideAchievementMessage()
+    {
+        yield return new WaitForSeconds(3f);
+        achievementText.text = ""; // Limpar mensagem após 3 segundos
     }
 
 }
