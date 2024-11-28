@@ -93,10 +93,8 @@ public class PlayerHealthController : MonoBehaviour
             //  Morre vida menor que 0
             if (currentHealth < 0)
             {
-                anim.SetBool("isDeath", true); // Ativa a animação de morte                               
-
-                StartCoroutine(EndIsDeath());              
-
+                anim.SetBool("isDeath", true); // Ativa a animação de morte                 
+                Morrer();
             }
             // Ainda tem vida
             else
@@ -113,28 +111,18 @@ public class PlayerHealthController : MonoBehaviour
 
         }
     }
-    
-    IEnumerator EndIsDeath()
-    {
-        yield return new WaitForSeconds(1.5f); // pausa a rotina por X segundos
-        Morrer();
-    }
-
-
+        
     public void Morrer()
     {
         vidas--;
         
         if (vidas < 0)
-        {
-            
+        {                        
             Reiniciar();
-            anim.SetBool("isDeath", false);
 
         }
         else
         {
-            anim.SetBool("isDeath", false);
             Inicializar();
         }
 
@@ -148,7 +136,9 @@ public class PlayerHealthController : MonoBehaviour
         //ponto inicial
         transform.position = posInicial;
         //recuperar HP
-        currentHealth = 3;        
+        currentHealth = 3;
+        anim.SetBool("isDeath", false); // desativando a animação de morte 
+
     }
 
     public void Reiniciar()

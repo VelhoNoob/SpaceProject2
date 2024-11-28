@@ -272,7 +272,7 @@ public class PlayerController : MonoBehaviour
             if (isCrouch) return;
 
             //Atirando
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.X))
             {
                 //Controle de munição
                 if (municao > 0)
