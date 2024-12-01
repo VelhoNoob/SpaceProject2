@@ -92,14 +92,22 @@ public class PlayerController : MonoBehaviour
             xInput = 0; // Impede o movimento horizontal enquanto agachado
         }
 
-        activeSpeed = moveSpeed;             
-        
+        activeSpeed = moveSpeed;
+
 
         // CORRER
         if (Input.GetKey(KeyCode.LeftShift) && !isCrouch)
+        {
             activeSpeed = runSpeed;
+            anim.SetBool("Correndo", true);
+        }
+        else
+        {
+            anim.SetBool("Correndo", false);
+        }
 
         rb.velocity = new Vector2(xInput * activeSpeed, rb.velocity.y);
+                
 
         //PULAR
         if (Input.GetButtonDown("Jump") &&!isCrouch)
@@ -266,8 +274,7 @@ public class PlayerController : MonoBehaviour
             boss = GameObject.FindGameObjectWithTag("Boss");
 
             if (boss == null)
-            {
-                AudioController.instance.AudioWin();
+            {                
                 // O Boss foi derrotado, pode ativar o efeito do EndGame
                 SceneManager.LoadScene(5); // Carrega a próxima cena ou efeito desejado
                 

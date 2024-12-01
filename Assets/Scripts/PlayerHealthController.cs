@@ -16,6 +16,7 @@ public class PlayerHealthController : MonoBehaviour
     [SerializeField] private int currentHealth;
     [SerializeField] private int maxHealth;
     [SerializeField] public int vidas;
+    private bool isDying = false;
 
 
     [SerializeField] private float invincibilityLength;
@@ -83,20 +84,28 @@ public class PlayerHealthController : MonoBehaviour
             posInicial = gatilho.transform.position;
         }
 
+        /*
+        if (gatilho.gameObject.tag == "Dano")
+        {
+            DamagePlayer();
+        }
+        */
 
     }
 
     public void DamagePlayer()
     {
-        if (invincibilityCounter <= 0)
+        if (invincibilityCounter <= 0 && !isDying)
         {
 
             currentHealth--;
             AudioController.instance.DanoPlayer();
+            player.Knockback();
 
             //  Morre vida menor que 0
             if (currentHealth < 0)
             {
+                isDying = true;
                 anim.SetBool("isDeath", true); // Ativa a animação de morte                
                 AudioController.instance.MortePlayer();
                 StartCoroutine(IsDeath());              
@@ -110,10 +119,7 @@ public class PlayerHealthController : MonoBehaviour
                 sr.color = fadeColor;
             }
 
-            UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);
-
-            player.Knockback();
-
+            UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);                   
 
         }
     }
@@ -123,6 +129,7 @@ public class PlayerHealthController : MonoBehaviour
         yield return new WaitForSeconds(1.5f); // pausa a rotina por X segundos
         anim.SetBool("isDeath", false);
         Morrer();
+        isDying = false;
     }
 
 
