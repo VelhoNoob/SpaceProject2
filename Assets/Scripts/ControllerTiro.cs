@@ -31,7 +31,7 @@ public class ControllerTiro : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D colisao)
-    {
+    {        
         if (colisao.gameObject.CompareTag("Enemy"))
         {
             // Obtém o script do inimigo atingido
@@ -43,21 +43,35 @@ public class ControllerTiro : MonoBehaviour
             }
 
             // Destroi a bala
+            Destroy(this.gameObject);            
+        }
+
+        if (colisao.gameObject.CompareTag("Bat"))
+        {
+            // Obtém o script do inimigo atingido
+            BatController bat = colisao.gameObject.GetComponent<BatController>();
+
+            if (bat != null)
+            {
+                bat.TomarDano(); // Aplica o dano ao inimigo
+            }
+
+            // Destroi a bala
             Destroy(this.gameObject);
         }
 
         if (colisao.gameObject.CompareTag("Boss"))
         {
             // Obtém o script do inimigo atingido
-            EnemyController enemy = colisao.gameObject.GetComponent<EnemyController>();
+            BossController boss = colisao.gameObject.GetComponent<BossController>();
 
-            if (enemy != null)
+            if (boss != null)
             {
-                enemy.TomarDano(); // Aplica o dano ao inimigo
+                boss.TomarDano(); // Aplica o dano ao inimigo
             }
 
             // Destroi a bala
-            Destroy(this.gameObject);
+            Destroy(this.gameObject);            
         }
 
         if (colisao.gameObject.CompareTag("Ground"))

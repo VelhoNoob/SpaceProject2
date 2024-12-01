@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private Transform tr;
     private BoxCollider2D bc;
     private SpriteRenderer sr;
+    private GameObject boss;
 
     [Header("Move Info")]
     [SerializeField] private float moveSpeed;
@@ -42,19 +43,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public GameObject Bala;
     [SerializeField] private float tempoEsperaTiro;
     [SerializeField] private float velocidadeDisparo;
-    [SerializeField] private float DuraçãoBala;
+    [SerializeField] private float duraçãoBala;
     private float meuTempoTiro = 0;
     [SerializeField] private bool pode_atirar = true;
 
     [Header("Munição")]
-    [SerializeField] private int municao;
-    private Text MunicaoTexto;
-
-
-    private GameObject boss;
-
-    
-       
+    [SerializeField] public int municao;
+    public Text MunicaoTexto;
+         
 
     private void Awake()
     {
@@ -100,7 +96,7 @@ public class PlayerController : MonoBehaviour
         
 
         // CORRER
-        if (Input.GetKey(KeyCode.LeftControl) && !isCrouch)
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouch)
             activeSpeed = runSpeed;
 
         rb.velocity = new Vector2(xInput * activeSpeed, rb.velocity.y);
@@ -112,6 +108,7 @@ public class PlayerController : MonoBehaviour
             {
                 Jump();
                 canDoubleJump = true;
+                AudioController.instance.JumpPlayer();
 
             }
             else
@@ -121,6 +118,7 @@ public class PlayerController : MonoBehaviour
                     Jump();
                     canDoubleJump = false;
                     anim.SetTrigger("isDoubleJump");
+                    AudioController.instance.JumpDublePlayer();
                     Invoke(nameof(DesativarAnimacaoPuloDuplo), 0.2f); // Intervalo para desativar animação
                 }
             }
@@ -204,6 +202,13 @@ public class PlayerController : MonoBehaviour
             PlayerHealthController.instance.DamagePlayer();
         }
 
+        // COLISÃO BAT
+        if (collision.gameObject.CompareTag("Bat"))
+        {
+            PlayerHealthController.instance.DamagePlayer();
+        }
+
+
         // COLISÃO BOSS
         if (collision.gameObject.CompareTag("Boss"))
         {
@@ -237,16 +242,22 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(gatilho.gameObject);
             cristais++;
+            // Atualizar UI
             CristaisTexto.text = cristais.ToString();
             // Notificar o sistema de conquistas
             AchievementSystem.instance.CristalCollected();
+            // Cahamando audio 
+            AudioController.instance.AudioCristais();
         }
         //MUNIÇÃO
         if (gatilho.gameObject.tag == "Munição")
         {
             Destroy(gatilho.gameObject);
             municao += 5;
+            // Atualizar UI
             MunicaoTexto.text = municao.ToString();
+            // Cahamando audio 
+            AudioController.instance.AudioMunicao();
         }
         //END GAME
         if (gatilho.gameObject.tag == "EndGame")
@@ -256,8 +267,10 @@ public class PlayerController : MonoBehaviour
 
             if (boss == null)
             {
+                AudioController.instance.AudioWin();
                 // O Boss foi derrotado, pode ativar o efeito do EndGame
                 SceneManager.LoadScene(5); // Carrega a próxima cena ou efeito desejado
+                
             }
 
         }
@@ -309,7 +322,7 @@ public class PlayerController : MonoBehaviour
             GameObject BalaDisparada = Instantiate(Bala, pontoDisparo, Quaternion.identity);
             BalaDisparada.GetComponent<ControllerTiro>().DirecaoBala(velocidadeDisparo);
             //destruir bala
-            Destroy(BalaDisparada, DuraçãoBala);
+            Destroy(BalaDisparada, duraçãoBala);
         }
 
         if (sr.flipX == true)
@@ -320,7 +333,7 @@ public class PlayerController : MonoBehaviour
             GameObject BalaDisparada = Instantiate(Bala, pontoDisparo, Quaternion.identity);
             BalaDisparada.GetComponent<ControllerTiro>().DirecaoBala(-velocidadeDisparo);
             //destruir bala
-            Destroy(BalaDisparada, DuraçãoBala);
+            Destroy(BalaDisparada, duraçãoBala);
         }
 
         pode_atirar = false;

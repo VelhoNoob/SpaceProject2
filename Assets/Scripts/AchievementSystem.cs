@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AchievementSystem : MonoBehaviour
 {
     public static AchievementSystem instance;
+
+    private AudioSource audioConquista;
+    
 
     [SerializeField] private int totalInimigos; // Total de inimigos no jogo
     [SerializeField] private int totalCristais; // Total de cristais no jogo
@@ -16,6 +20,14 @@ public class AchievementSystem : MonoBehaviour
     {
         if (instance == null)
             instance = this;
+    }
+
+    public void Start()
+    {
+        //Audio Conquista
+        GameObject audioObject = GameObject.FindGameObjectWithTag("TextoConquitasTag");
+        audioConquista = audioObject.GetComponent<AudioSource>();
+
     }
 
     public void SetTotals(int inimigos, int cristais)
@@ -30,7 +42,9 @@ public class AchievementSystem : MonoBehaviour
         if (inimigosDerrotados >= totalInimigos)
         {
             NotifyAchievement("Conquista: Todos os inimigos derrotados!");
+            audioConquista.Play();
         }
+
     }
 
     public void CristalCollected()
@@ -39,22 +53,9 @@ public class AchievementSystem : MonoBehaviour
         if (cristaisColetados >= totalCristais)
         {
             NotifyAchievement("Conquista: Todos os cristais coletados!");
+            audioConquista.Play();
         }
-    }
-    /*
-    private void CheckAchievements()
-    {
-        if (inimigosDerrotados >= totalInimigos)
-        {
-            NotifyAchievement("Conquista: Todos os inimigos derrotados!");
-        }
-
-        if (cristaisColetados >= totalCristais)
-        {
-            NotifyAchievement("Conquista: Todos os cristais coletados!");
-        }
-    }
-    */
+    }   
 
     private void NotifyAchievement(string message)
     {

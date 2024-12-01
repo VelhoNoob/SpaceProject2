@@ -126,9 +126,10 @@ GameObject:
   - component: {fileID: 8931067601963840182}
   - component: {fileID: 2673386068870179482}
   - component: {fileID: 5858967791166618868}
+  - component: {fileID: 3563192702006429471}
   m_Layer: 10
   m_Name: Bat
-  m_TagString: Enemy
+  m_TagString: Bat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -312,3 +313,16 @@ MonoBehaviour:
   speed: 1
   lostPlayer: 1
   canFly: 1
+--- !u!114 &3563192702006429471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8695535796776518470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39a02243e5e03a64d8be931ab9571ea7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vidaInimigo: 1

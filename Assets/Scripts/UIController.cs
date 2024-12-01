@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     public static UIController instance;
-    
+
+    private PlayerController player;
+
 
     [SerializeField] private Image[] heatsImage;
     [SerializeField] private Text achievementText;
@@ -23,6 +25,8 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        player = GetComponent<PlayerController>();
+
         vidas = PlayerHealthController.instance.vidas;
         vidas_texto = GameObject.FindGameObjectWithTag("TextoVidasTag").GetComponent<Text>();
         vidas_texto.text = "Vidas: " + vidas.ToString();                
@@ -52,6 +56,11 @@ public class UIController : MonoBehaviour
     public void UpdateVidasDisplay()
     {
         vidas_texto.text = "Vidas: " + PlayerHealthController.instance.vidas.ToString();
+    }
+
+    public void UpdateMunicaoDisplay()
+    {
+        player.MunicaoTexto.text = player.municao.ToString();
     }
 
     public void ShowAchievementMessage(string message)

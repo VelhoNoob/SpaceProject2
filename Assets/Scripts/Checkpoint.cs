@@ -19,6 +19,7 @@ public class Checkpoint : MonoBehaviour
         {
             anim.SetBool("isFlagActive", true);
             isActive = true;
+            AudioController.instance.AudioCheckpoint();
         }
 
     }
@@ -29,9 +30,4 @@ public class Checkpoint : MonoBehaviour
         isActive = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

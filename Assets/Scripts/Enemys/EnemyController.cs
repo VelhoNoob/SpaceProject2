@@ -5,11 +5,11 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     public static EnemyController instance;
-    private SpriteRenderer ImagemEnemy;
+    private SpriteRenderer ImagemEnemy;        
 
     [SerializeField] private float velocidade;
-    [SerializeField] private float distInicial = -0.5f;
-    [SerializeField] private float distFinal = 2f;
+    [SerializeField] private float distInicial;
+    [SerializeField] private float distFinal;
     [SerializeField] public int vidaInimigo;
 
     private void Awake()
@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ImagemEnemy = GetComponent<SpriteRenderer>();
+        ImagemEnemy = GetComponent<SpriteRenderer>();        
     }
 
     // Update is called once per frame
@@ -50,14 +50,24 @@ public class EnemyController : MonoBehaviour
 
     public void TomarDano()
     {
-        vidaInimigo--; // Reduz a vida do inimigo
+        vidaInimigo--; // Reduz a vida do inimigo        
 
         if (vidaInimigo <= 0) // Verifica se a vida é menor ou igual a zero
         {
-            Destroy(this.gameObject); // Destroi o inimigo
-            
-            // Notificar o sistema de conquistas
+            //Chamar audio death
+            AudioController.instance.AudioInimigo();
+
+            StartCoroutine(Destroy()); // chama a pausa da corrotina
+
+            // Notificar o sistema de conquistas   
             AchievementSystem.instance.EnemyDefeated();
-        }
+        }   
+    }
+
+    IEnumerator Destroy()
+    {
+        yield return new WaitForSeconds(0.3f); // pausa a rotina por 2 segundos
+        Destroy(this.gameObject); // Destroi o inimigo
     }
 }
+

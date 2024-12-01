@@ -17,6 +17,8 @@ TagManager:
   - Boss
   - municao
   - Checkpoint
+  - TextoConquitasTag
+  - Bat
   layers:
   - Default
   - TransparentFX

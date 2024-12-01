@@ -8,8 +8,10 @@ using UnityEngine.Video;
 public class PlayerHealthController : MonoBehaviour
 {
     public static PlayerHealthController instance;
-
-    private Animator anim;
+    private SpriteRenderer sr;
+    private PlayerController player;
+    private Animator anim;   
+   
 
     [SerializeField] private int currentHealth;
     [SerializeField] private int maxHealth;
@@ -19,14 +21,14 @@ public class PlayerHealthController : MonoBehaviour
     [SerializeField] private float invincibilityLength;
     private float invincibilityCounter;
 
-    private SpriteRenderer sr;
+    
     [SerializeField] private Color normalColor;
     [SerializeField] private Color fadeColor;
 
     //Variavel Posição Inicial
     [SerializeField] private Vector3 posInicial;
 
-    private PlayerController player;
+    
 
     private void Awake()
     {
@@ -39,7 +41,7 @@ public class PlayerHealthController : MonoBehaviour
     {
         sr = GetComponentInChildren<SpriteRenderer>();               
         player = GetComponent<PlayerController>();
-        anim = GetComponentInChildren<Animator>();
+        anim = GetComponentInChildren<Animator>();        
 
         currentHealth = maxHealth;
 
@@ -71,7 +73,8 @@ public class PlayerHealthController : MonoBehaviour
     {       
         //Morte instatanea
         if (gatilho.gameObject.tag == "MorteImediata")
-        {            
+        {
+            AudioController.instance.MorteBuraco();
             Morrer();
         }
 
@@ -89,12 +92,13 @@ public class PlayerHealthController : MonoBehaviour
         {
 
             currentHealth--;
+            AudioController.instance.DanoPlayer();
 
             //  Morre vida menor que 0
             if (currentHealth < 0)
             {
-                anim.SetBool("isDeath", true); // Ativa a animação de morte                               
-
+                anim.SetBool("isDeath", true); // Ativa a animação de morte                
+                AudioController.instance.MortePlayer();
                 StartCoroutine(IsDeath());              
 
             }
@@ -139,7 +143,7 @@ public class PlayerHealthController : MonoBehaviour
             Inicializar();
         }
 
-        UIController.instance.UpdateVidasDisplay();
+        UIController.instance.UpdateVidasDisplay();        
         UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);
 
     }
@@ -151,7 +155,10 @@ public class PlayerHealthController : MonoBehaviour
         transform.position = posInicial;
         //recuperar HP
         currentHealth = 3;
-        
+
+        player.municao = 15;
+        player.MunicaoTexto.text = player.municao.ToString();
+
     }
 
     public void Reiniciar()

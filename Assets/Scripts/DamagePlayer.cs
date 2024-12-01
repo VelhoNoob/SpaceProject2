@@ -21,11 +21,7 @@ public class DamagePlayer : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //other.gameObject.SetActive(false);
-            //other.GetComponent<PlayerHealthController>().DamagePlayer();
-            PlayerHealthController.instance.DamagePlayer();
-            //UIController.instance.UpdateHealthDisplay();
-
+           PlayerHealthController.instance.DamagePlayer();     
         }
     }
 
