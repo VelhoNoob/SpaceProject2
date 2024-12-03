@@ -20,6 +20,7 @@ TagManager:
   - TextoConquitasTag
   - Bat
   - Dano
+  - Ground2
   layers:
   - Default
   - TransparentFX
@@ -32,7 +33,7 @@ TagManager:
   - Confiner
   - Platform
   - Enemy
-  - 
+  - Ground2
   - 
   - 
   - 

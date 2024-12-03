@@ -133,8 +133,12 @@ public class ControllerTiro : MonoBehaviour
 
         if (other.CompareTag("Ground") && other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            // Destroi a bala ao colidir com o chão
-            Debug.Log("Trigger com Ground detectado!");
+            // Destroi a bala ao colidir com o chão            
+            Destroy(this.gameObject);
+        }
+
+        if (other.CompareTag("Ground2") && other.gameObject.layer == LayerMask.NameToLayer("Ground2"))
+        {                      
             Destroy(this.gameObject);
         }
     }

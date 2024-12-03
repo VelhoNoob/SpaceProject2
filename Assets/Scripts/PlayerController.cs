@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -359,6 +357,7 @@ public class PlayerController : MonoBehaviour
     }
 
     //KNOCKBACK
+    
     public void Knockback()
     {
         isKnockingback = true;
@@ -366,26 +365,31 @@ public class PlayerController : MonoBehaviour
         Vector2 knockbackDir = Vector2.zero;
         float knockbakJump = jumpForce * .5f;
 
-        if (rb.velocity.x > 0)
-        {
-            knockbackDir = new Vector2(rb.velocity.x * -.5f, knockbakJump);
-        }
+        // Adicione aqui um impeditivo para que o player não mova sua posição se estiver em colição com a pare
+                
+            if (rb.velocity.x > 0)
+            {
+                knockbackDir = new Vector2(rb.velocity.x * -.5f, knockbakJump);
+            }
 
-        if (rb.velocity.x < 0)
-        {
-            knockbackDir = new Vector2(rb.velocity.x * -.5f, knockbakJump);
-        }
+            if (rb.velocity.x < 0)
+            {
+                knockbackDir = new Vector2(rb.velocity.x * -.5f, knockbakJump);
+            }      
+             
 
         rb.velocity = knockbackDir;
         anim.SetTrigger("isKnockback");
 
         StartCoroutine(EndKnockback()); // chama a pausa da corrotina
 
-    }
+    }   
+    
 
     IEnumerator EndKnockback()
     {
         yield return new WaitForSeconds(.2f); // pausa a rotina por 2 segundos
         isKnockingback = false;
     }
+    
 }

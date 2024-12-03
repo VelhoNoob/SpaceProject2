@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
-using UnityEngine.Video;
+
 
 public class PlayerHealthController : MonoBehaviour
 {
@@ -48,7 +47,7 @@ public class PlayerHealthController : MonoBehaviour
 
         //Determinando posição inicial no começo do jogo
         posInicial = new Vector3(-11.53f, 0, transform.position.z);
-        //transform.position = posInicial;
+        transform.position = posInicial;
 
         UIController.instance.UpdateHealthDisplay(currentHealth, maxHealth);
                 
