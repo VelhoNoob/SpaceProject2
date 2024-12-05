@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
                 
 
         //PULAR
-        if (Input.GetButtonDown("Jump") &&!isCrouch)
+        if (Input.GetButtonDown("Jump") && !isCrouch)
         {
             if (isGounded)
             {
