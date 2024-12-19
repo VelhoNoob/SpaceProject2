@@ -102,7 +102,7 @@ public class PlayerHealthController : MonoBehaviour
             player.Knockback();
 
             //  Morre vida menor que 0
-            if (currentHealth < 0)
+            if (currentHealth <= 0)
             {
                 isDying = true;
                 anim.SetBool("isDeath", true); // Ativa a animação de morte                
@@ -125,7 +125,9 @@ public class PlayerHealthController : MonoBehaviour
     
     IEnumerator IsDeath()
     {
+        player.enabled = false;
         yield return new WaitForSeconds(1.5f); // pausa a rotina por X segundos
+        player.enabled = true;
         anim.SetBool("isDeath", false);
         Morrer();
         isDying = false;
@@ -160,7 +162,7 @@ public class PlayerHealthController : MonoBehaviour
         //ponto inicial
         transform.position = posInicial;
         //recuperar HP
-        currentHealth = 3;
+        currentHealth = maxHealth;
 
         player.municao = 15;
         player.MunicaoTexto.text = player.municao.ToString();

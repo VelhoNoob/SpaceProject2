@@ -34,7 +34,7 @@ public class BossController : MonoBehaviour
 
     IEnumerator Destroy()
     {
-        yield return new WaitForSeconds(0.3f); // pausa a rotina por 2 segundos
+        yield return new WaitForSeconds(0.2f); // pausa a rotina por 2 segundos
         Destroy(this.gameObject); // Destroi o inimigo
     }
 }

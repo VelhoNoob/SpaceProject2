@@ -27,19 +27,14 @@ public class BatController : MonoBehaviour
         {
             //Chamar audio death   
             AudioController.instance.AudioBat();
-
-            StartCoroutine(Destroy()); // chama a pausa da corrotina
+                      
+            Destroy(this.gameObject);
 
             // Notificar o sistema de conquistas   
             AchievementSystem.instance.EnemyDefeated();
         }
     }
 
-    IEnumerator Destroy()
-    {
-        yield return new WaitForSeconds(0.3f); // pausa a rotina por 2 segundos
-        Destroy(this.gameObject); // Destroi o inimigo
-    }
 }
 
 

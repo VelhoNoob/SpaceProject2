@@ -259,7 +259,7 @@ public class PlayerController : MonoBehaviour
         if (gatilho.gameObject.tag == "Munição")
         {
             Destroy(gatilho.gameObject);
-            municao += 5;
+            municao += 10;
             // Atualizar UI
             MunicaoTexto.text = municao.ToString();
             // Cahamando audio 
