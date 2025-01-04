@@ -10,16 +10,25 @@ public class MobilePlatform : MonoBehaviour
 
     public Transform[] pointsToMove;
     public int startingPoint;
-    
+
+    public bool isSpecialPlatform; // Indica se esta plataforma deve ser ativada por colisão
+    private bool isMoving; // Indica se a plataforma está se
+
+
     void Start()
     {
         pMove = pMove = PlayerController.instance;
         transform.position = pointsToMove[startingPoint].transform.position;
+        isMoving = !isSpecialPlatform; // Plataformas não especiais começam a se mover automaticamente
     }
 
     private void FixedUpdate()
     {
-        Move();
+        // Move();
+        if (isMoving)
+        {
+            Move();
+        }
     }
 
     private void Move()
@@ -39,17 +48,23 @@ public class MobilePlatform : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player" && pMove.isOnPlatform)
+        if (collision.gameObject.CompareTag("Player"))
         {
             collision.transform.SetParent(transform);
+
+            // Ativa o movimento para plataformas especiais
+            if (isSpecialPlatform && !isMoving)
+            {
+                isMoving = true;
+            }
         }
     }
 
-    private void onCollisionExit2D(Collision2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
             collision.transform.SetParent(null);
         }
-    }    
+    }
 }
